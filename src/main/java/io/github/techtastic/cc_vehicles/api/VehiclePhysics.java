@@ -72,6 +72,8 @@ public class VehiclePhysics extends EntityExisting {
     @LuaFunction
     public final void changeVariant(String variant) {
         this.vehicle.updateSubDefinition(variant);
+        this.vehicle.parts.forEach(part -> part.updateTone(true));
+        this.vehicle.update();
     }
 
     @LuaFunction

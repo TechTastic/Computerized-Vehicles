@@ -1,10 +1,9 @@
 package io.github.techtastic.cc_vehicles.api;
 
 import dan200.computercraft.api.lua.*;
+import io.github.techtastic.cc_vehicles.CCVehicles;
 import io.github.techtastic.cc_vehicles.util.LuaConversions;
-import mcinterface1201.BuilderItem;
-import mcinterface1201.WrapperAABBCollective;
-import mcinterface1201.WrapperWorld;
+import mcinterface1201.*;
 import minecrafttransportsimulator.baseclasses.BoundingBox;
 import minecrafttransportsimulator.baseclasses.Point3D;
 import minecrafttransportsimulator.entities.components.AEntityA_Base;
@@ -12,9 +11,13 @@ import minecrafttransportsimulator.entities.components.AEntityB_Existing;
 import minecrafttransportsimulator.entities.instances.EntityVehicleF_Physics;
 import minecrafttransportsimulator.items.components.AItemPart;
 import minecrafttransportsimulator.items.instances.ItemVehicle;
+import minecrafttransportsimulator.mcinterface.IWrapperNBT;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
@@ -78,7 +81,16 @@ public class VehicleAPI implements ILuaAPI {
         WrapperWorld world = getWrapperWorld();
         EntityVehicleF_Physics vehicle = LuaConversions.getVehicle(args, 0, world);
 
-        Point3D pos = LuaConversions.optPoint(args, 1, new Point3D(this.getPosition().getX(), this.getPosition().getY() + 1, this.getPosition().getZ()));
+        IWrapperNBT nbt;
+        try {
+            Class<?> clazz = ClassLoader.getPlatformClassLoader().loadClass("mcinterface1201.WrapperNBT");
+            nbt = (IWrapperNBT) clazz.newInstance();
+        } catch (Exception ignored) {
+            nbt = null;
+        }
+
+        Vec3 vec = this.getPosition().getCenter().relative(Direction.UP, vehicle.boundingBox.heightRadius + .5);
+        Point3D pos = LuaConversions.optPoint(args, 1, new Point3D(vec.x, vec.y, vec.z));
         Point3D angles = LuaConversions.optPoint(args, 2, new Point3D());
         Point3D motion = LuaConversions.optPoint(args, 3, new Point3D());
         vehicle.position.set(pos);
@@ -88,6 +100,7 @@ public class VehicleAPI implements ILuaAPI {
         vehicle.motion.set(motion);
         vehicle.prevMotion.set(new Point3D());
         world.spawnEntity(vehicle);
+        vehicle.addPartsPostAddition(null, nbt);
 
         return new VehiclePhysics(vehicle);
     }
@@ -101,12 +114,17 @@ public class VehicleAPI implements ILuaAPI {
             throw LuaValues.badArgument(0, "IV/MTS placed entity", "nil");
         if (!(entity instanceof AEntityB_Existing existing))
             throw LuaValues.badArgument(0, "IV/MTS placed entity", uniqueUUID.toString());
-        world.getEntitiesWithin(existing.boundingBox).stream()
-                .filter(wrapper ->
-                        wrapper.getData().hasKey("uniqueUUID") && wrapper.getData().getUUID("uniqueUUID") == existing.uniqueUUID)
-                .map(wrapper -> this.getLevel().getEntity(wrapper.getID()))
-                .filter(Objects::nonNull)
-                .forEach(e -> e.remove(Entity.RemovalReason.DISCARDED));
-        world.removeEntity(existing);
+        this.getLevel().getEntitiesOfClass(BuilderEntityExisting.class, AABB.ofSize(new Vec3(
+                existing.boundingBox.globalCenter.x, existing.boundingBox.globalCenter.y, existing.boundingBox.globalCenter.z),
+                existing.boundingBox.widthRadius * 2, existing.boundingBox.heightRadius * 2, existing.boundingBox.depthRadius * 2)
+        ).stream().filter(e -> {
+            CCVehicles.LOGGER.info("Did this execute?");
+            WrapperEntity wrapper = world.getExternalEntity(e.getUUID());
+            if (wrapper == null)
+                return false;
+            IWrapperNBT data = wrapper.getData();
+            return data.hasKey("uniqueUUID") && data.getUUID("uniqueUUID").equals(existing.uniqueUUID);
+        }).forEach(e -> e.remove(Entity.RemovalReason.DISCARDED));
+        //world.removeEntity(existing);
     }
 }

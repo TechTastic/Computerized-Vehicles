@@ -19,6 +19,7 @@ import minecrafttransportsimulator.jsondefs.AJSONItem;
 import minecrafttransportsimulator.jsondefs.AJSONPartProvider;
 import minecrafttransportsimulator.jsondefs.JSONDummyPartProvider;
 import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
+import minecrafttransportsimulator.mcinterface.IWrapperNBT;
 import minecrafttransportsimulator.packloading.JSONParser;
 import minecrafttransportsimulator.packloading.PackParser;
 import net.minecraft.client.particle.AshParticle;
