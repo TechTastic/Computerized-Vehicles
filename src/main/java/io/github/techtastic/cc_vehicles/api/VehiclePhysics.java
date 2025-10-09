@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.LuaValues;
+import io.github.techtastic.cc_vehicles.networking.packet.PacketEntityColorChangeComputer;
 import io.github.techtastic.cc_vehicles.util.LuaConversions;
 import mcinterface1201.WrapperEntity;
 import mcinterface1201.WrapperItemStack;
@@ -12,6 +13,7 @@ import minecrafttransportsimulator.entities.instances.PartSeat;
 import minecrafttransportsimulator.items.components.AItemPart;
 import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
 import minecrafttransportsimulator.mcinterface.IWrapperEntity;
+import minecrafttransportsimulator.mcinterface.InterfaceManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,7 +75,7 @@ public class VehiclePhysics extends EntityExisting {
     public final void changeVariant(String variant) {
         this.vehicle.updateSubDefinition(variant);
         this.vehicle.parts.forEach(part -> part.updateTone(true));
-        this.vehicle.update();
+        InterfaceManager.packetInterface.sendToAllClients(new PacketEntityColorChangeComputer(this.vehicle, variant));
     }
 
     @LuaFunction

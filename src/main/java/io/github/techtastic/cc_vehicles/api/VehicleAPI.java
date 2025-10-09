@@ -14,14 +14,15 @@ import minecrafttransportsimulator.items.instances.ItemVehicle;
 import minecrafttransportsimulator.mcinterface.IWrapperNBT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class VehicleAPI implements ILuaAPI {
@@ -89,9 +90,10 @@ public class VehicleAPI implements ILuaAPI {
             nbt = null;
         }
 
-        Vec3 vec = this.getPosition().getCenter().relative(Direction.UP, vehicle.boundingBox.heightRadius + .5);
+        Direction facing = this.getLevel().getBlockState(this.getPosition()).getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Vec3 vec = this.getPosition().getCenter().relative(Direction.UP, vehicle.boundingBox.heightRadius + .5).relative(facing, 0.5);
         Point3D pos = LuaConversions.optPoint(args, 1, new Point3D(vec.x, vec.y, vec.z));
-        Point3D angles = LuaConversions.optPoint(args, 2, new Point3D());
+        Point3D angles = LuaConversions.optPoint(args, 2, new Point3D(0, facing.toYRot(), 0));
         Point3D motion = LuaConversions.optPoint(args, 3, new Point3D());
         vehicle.position.set(pos);
         vehicle.prevPosition.set(new Point3D());

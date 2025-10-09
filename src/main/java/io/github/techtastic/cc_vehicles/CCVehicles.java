@@ -5,6 +5,8 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.component.AdminComputer;
 import dan200.computercraft.api.component.ComputerComponents;
 import io.github.techtastic.cc_vehicles.api.VehicleAPI;
+import minecrafttransportsimulator.mcinterface.InterfaceManager;
+import minecrafttransportsimulator.packets.components.APacketBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
