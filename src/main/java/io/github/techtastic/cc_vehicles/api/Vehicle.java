@@ -47,6 +47,11 @@ public class Vehicle extends EntityExisting {
         return LuaConversions.toLuaAny(this.getVehicle().definition);
     }
 
+    @LuaFunction
+    public final double getSpeed() throws LuaException {
+        return this.getVehicle().indicatedSpeed;
+    }
+
     // Fuel
 
     @LuaFunction
@@ -155,6 +160,30 @@ public class Vehicle extends EntityExisting {
     public final void setParkingBrakeActive(IArguments args) throws LuaException {
         toggleActive(this.getVehicle().parkingBrakeVar, args, 0);
     }
+
+    @LuaFunction
+    public final double getTurningInput() throws LuaException {
+        return this.getVehicle().rudderInputVar.getValue();
+    }
+
+    @LuaFunction
+    public final void setTurningInput(double angle) throws LuaException {
+        this.getVehicle().rudderInputVar.setTo(angle, true);
+    }
+
+    // Horn
+
+    @LuaFunction
+    public final boolean isHornActive() throws LuaException {
+        return this.getVehicle().hornVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setHornActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().hornVar, args, 0);
+    }
+
+    // Lights
 
     @LuaFunction
     public final boolean isTurnSignalActive(boolean left) throws LuaException {

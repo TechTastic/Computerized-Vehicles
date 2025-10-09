@@ -75,4 +75,9 @@ public class EnginePart extends BasePart<PartEngine> {
     public final void shiftNeutral() {
         this.getPart().shiftNeutral();
     }
+
+    @LuaFunction
+    public final double getCurrentGear() {
+        return this.getPart().currentGearVar.getValue();
+    }
 }
