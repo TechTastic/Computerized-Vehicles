@@ -7,10 +7,8 @@ import dan200.computercraft.api.lua.LuaValues;
 import io.github.techtastic.cc_vehicles.networking.packet.PacketEntityColorChangeComputer;
 import io.github.techtastic.cc_vehicles.util.LuaConversions;
 import mcinterface1201.WrapperWorld;
-import minecrafttransportsimulator.entities.instances.APart;
-import minecrafttransportsimulator.entities.instances.EntityVehicleF_Physics;
-import minecrafttransportsimulator.entities.instances.PartGun;
-import minecrafttransportsimulator.entities.instances.PartSeat;
+import minecrafttransportsimulator.baseclasses.ComputedVariable;
+import minecrafttransportsimulator.entities.instances.*;
 import minecrafttransportsimulator.items.components.AItemPart;
 import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
 import minecrafttransportsimulator.mcinterface.InterfaceManager;
@@ -34,6 +32,23 @@ public class Vehicle extends EntityExisting {
         throw new LuaException("the vehicle with ID " + this.vehicleId + " no longer exists!");
     }
 
+    private void toggleActive(ComputedVariable variable, IArguments args, int index) throws LuaException {
+        boolean oldState = variable.isActive;
+        boolean newState = args.optBoolean(index, !oldState);
+
+        if (oldState != newState)
+            variable.setActive(newState, true);
+    }
+
+    // General
+
+    @LuaFunction
+    public final Object getDefinition() throws LuaException {
+        return LuaConversions.toLuaAny(this.getVehicle().definition);
+    }
+
+    // Fuel
+
     @LuaFunction
     public final boolean isBeingFueled() throws LuaException {
         return this.getVehicle().beingFueled;
@@ -44,18 +59,15 @@ public class Vehicle extends EntityExisting {
         return new FuelTank(this.getVehicle().fuelTank);
     }
 
+    // Parts
+
     @LuaFunction
-    public final Object getDefinition() throws LuaException {
-        return LuaConversions.toLuaAny(this.getVehicle().definition);
+    public final List<EnginePart> getEngines() throws LuaException {
+        return this.getVehicle().engines.stream().map(EnginePart::new).toList();
     }
 
     @LuaFunction
-    public final List<Engine> getEngines() throws LuaException {
-        return this.getVehicle().engines.stream().map(Engine::new).toList();
-    }
-
-    @LuaFunction
-    public final List<SeatPart> getAllSeats() throws LuaException {
+    public final List<SeatPart> getSeats() throws LuaException {
         return this.getVehicle().partsInSlots.stream()
                 .filter(part -> part instanceof PartSeat)
                 .map(part -> new SeatPart((PartSeat) part))
@@ -63,7 +75,7 @@ public class Vehicle extends EntityExisting {
     }
 
     @LuaFunction
-    public final List<GunPart> getAllGuns() throws LuaException {
+    public final List<GunPart> getGuns() throws LuaException {
         return this.getVehicle().partsInSlots.stream()
                 .filter(part -> part instanceof PartGun)
                 .map(part -> new GunPart((PartGun) part))
@@ -89,6 +101,8 @@ public class Vehicle extends EntityExisting {
         vehicle.removePart(part, true, true);
     }
 
+    // Variants and Mud
+
     @LuaFunction
     public final List<String> getVariants() throws LuaException {
         return this.getVehicle().definition.definitions.stream().map(def -> def.subName).toList();
@@ -108,5 +122,112 @@ public class Vehicle extends EntityExisting {
         if (vehicle.containsVariable("mudAcc"))
             vehicle.getOrCreateVariable("mudAcc").setTo(mud, true);
         throw new LuaException("This vehicle does not handle mud!");
+    }
+
+    // Controls
+
+    @LuaFunction
+    public final double getThrottle() throws LuaException {
+        return this.getVehicle().throttleVar.getValue();
+    }
+
+    @LuaFunction
+    public final void setThrottle(double throttle) throws LuaException {
+        this.getVehicle().throttleVar.setTo(Math.max(0, Math.min(1, throttle)), true);
+    }
+
+    @LuaFunction
+    public final double getBrakeLevel() throws LuaException {
+        return this.getVehicle().brakeVar.getValue();
+    }
+
+    @LuaFunction
+    public final void setBrakeLevel(double brakeLevel) throws LuaException {
+        this.getVehicle().brakeVar.setTo(Math.max(0, Math.min(1, brakeLevel)), true);
+    }
+
+    @LuaFunction
+    public final boolean isParkingBrakeActive() throws LuaException {
+        return this.getVehicle().parkingBrakeVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setParkingBrakeActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().parkingBrakeVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean isTurnSignalActive(boolean left) throws LuaException {
+        if (left)
+            return this.getVehicle().leftTurnLightVar.isActive;
+        return this.getVehicle().rightTurnLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setTurnSignalActive(boolean left, IArguments args) throws LuaException {
+        if (left)
+            toggleActive(this.getVehicle().leftTurnLightVar, args, 1);
+        else
+            toggleActive(this.getVehicle().rightTurnLightVar, args, 1);
+    }
+
+    @LuaFunction
+    public final boolean getHeadLightActive() throws LuaException {
+        return this.getVehicle().headLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setHeadLightActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().headLightVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean getLandingLightActive() throws LuaException {
+        return this.getVehicle().landingLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setLandingLightActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().landingLightVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean getNavLightsActive() throws LuaException {
+        return this.getVehicle().navigationLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setNavLightsActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().navigationLightVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean getRunningLightActive() throws LuaException {
+        return this.getVehicle().runningLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setRunningLightActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().runningLightVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean getStrobeLightActive() throws LuaException {
+        return this.getVehicle().strobeLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setStrobeLightActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().strobeLightVar, args, 0);
+    }
+
+    @LuaFunction
+    public final boolean getTaxiLightActive() throws LuaException {
+        return this.getVehicle().taxiLightVar.isActive;
+    }
+
+    @LuaFunction
+    public final void setTaxiLightActive(IArguments args) throws LuaException {
+        toggleActive(this.getVehicle().taxiLightVar, args, 0);
     }
 }

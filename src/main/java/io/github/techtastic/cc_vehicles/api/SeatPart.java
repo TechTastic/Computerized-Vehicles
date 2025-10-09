@@ -29,7 +29,7 @@ public class SeatPart extends BasePart<PartSeat> {
     public final boolean setRider(String uuid, IArguments args) throws LuaException {
         PartSeat seat = this.getPart();
         IWrapperEntity entity = seat.world.getEntity(UUID.fromString(uuid));
-        return seat.setRider(entity, args.optBoolean(0, true));
+        return seat.setRider(entity, args.optBoolean(1, true));
     }
 
     @LuaFunction

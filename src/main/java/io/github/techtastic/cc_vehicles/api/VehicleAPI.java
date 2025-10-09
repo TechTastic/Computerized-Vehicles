@@ -1,7 +1,6 @@
 package io.github.techtastic.cc_vehicles.api;
 
 import dan200.computercraft.api.lua.*;
-import io.github.techtastic.cc_vehicles.CCVehicles;
 import io.github.techtastic.cc_vehicles.util.LuaConversions;
 import mcinterface1201.*;
 import minecrafttransportsimulator.baseclasses.BoundingBox;
@@ -100,6 +99,8 @@ public class VehicleAPI implements ILuaAPI {
         vehicle.prevOrientation.setToAngles(new Point3D());
         vehicle.motion.set(motion);
         vehicle.prevMotion.set(new Point3D());
+        if (vehicle.containsVariable("mudAcc"))
+            vehicle.getOrCreateVariable("mudAcc").setTo(args.optDouble(4, 0), false);
         world.spawnEntity(vehicle);
         vehicle.addPartsPostAddition(null, nbt);
 
@@ -119,7 +120,6 @@ public class VehicleAPI implements ILuaAPI {
                 existing.boundingBox.globalCenter.x, existing.boundingBox.globalCenter.y, existing.boundingBox.globalCenter.z),
                 existing.boundingBox.widthRadius * 2, existing.boundingBox.heightRadius * 2, existing.boundingBox.depthRadius * 2)
         ).stream().filter(e -> {
-            CCVehicles.LOGGER.info("Did this execute?");
             WrapperEntity wrapper = world.getExternalEntity(e.getUUID());
             if (wrapper == null)
                 return false;
