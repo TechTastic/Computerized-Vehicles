@@ -4,25 +4,14 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaValues;
 import mcinterface1201.BuilderItem;
-import mcinterface1201.WrapperItemStack;
 import mcinterface1201.WrapperWorld;
 import minecrafttransportsimulator.baseclasses.Point3D;
 import minecrafttransportsimulator.baseclasses.RotationMatrix;
 import minecrafttransportsimulator.entities.components.AEntityA_Base;
-import minecrafttransportsimulator.entities.components.AEntityF_Multipart;
-import minecrafttransportsimulator.entities.instances.APart;
 import minecrafttransportsimulator.entities.instances.EntityVehicleF_Physics;
+import minecrafttransportsimulator.items.components.AItemBase;
 import minecrafttransportsimulator.items.components.AItemPart;
-import minecrafttransportsimulator.items.instances.ItemPartEffector;
 import minecrafttransportsimulator.items.instances.ItemVehicle;
-import minecrafttransportsimulator.jsondefs.AJSONItem;
-import minecrafttransportsimulator.jsondefs.AJSONPartProvider;
-import minecrafttransportsimulator.jsondefs.JSONDummyPartProvider;
-import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
-import minecrafttransportsimulator.mcinterface.IWrapperNBT;
-import minecrafttransportsimulator.packloading.JSONParser;
-import minecrafttransportsimulator.packloading.PackParser;
-import net.minecraft.client.particle.AshParticle;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -32,7 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class LuaConversions {
-    public static AItemPart getPart(IArguments args, int index) throws LuaException {
+    public static <T extends AItemBase> T getMTSItem(IArguments args, int index, Class<T> type) throws LuaException {
         String str = args.getString(index);
         ResourceLocation location = ResourceLocation.tryParse(str);
         if (location == null)
@@ -45,35 +34,26 @@ public class LuaConversions {
         Item item = optItem.get().value();
         if (!(item instanceof BuilderItem builderItem))
             throw LuaValues.badArgument(index, "valid IV/MTS item", location.toString());
-        if (!(builderItem.getWrappedItem() instanceof AItemPart partItem))
-            throw LuaValues.badArgument(index, "valid IV/MTS part item", location.toString());
+        try {
+            return (T) builderItem.getWrappedItem();
+        } catch (ClassCastException ignored) {
+            throw LuaValues.badArgument(index, "valid IV/MTS " + type.getSimpleName() + " item", location.toString());
+        }
+    }
 
-        return partItem;
+    public static AItemPart getPart(IArguments args, int index) throws LuaException {
+        return LuaConversions.getMTSItem(args, index, AItemPart.class);
     }
 
     public static EntityVehicleF_Physics getVehicle(IArguments args, int index, WrapperWorld world) throws LuaException {
-        String str = args.getString(index);
         try {
-            UUID uniqueUUID = UUID.fromString(str);
+            UUID uniqueUUID = UUID.fromString(args.getString(index));
             AEntityA_Base entity = world.getEntity(uniqueUUID);
             if (entity instanceof EntityVehicleF_Physics vehicle)
                 return vehicle;
             throw LuaValues.badArgument(index, "unique UUID of vehicle", uniqueUUID.toString());
         } catch (IllegalArgumentException e) {
-            ResourceLocation location = ResourceLocation.tryParse(str);
-            if (location == null)
-                throw LuaValues.badArgument(index, "item ID", str);
-
-            Optional<Holder.Reference<Item>> optItem = ForgeRegistries.ITEMS.getDelegate(location);
-            if (optItem.isEmpty())
-                throw LuaValues.badArgument(index, "valid item ID", location.toString());
-
-            Item item = optItem.get().value();
-            if (!(item instanceof BuilderItem builderItem))
-                throw LuaValues.badArgument(index, "valid IV/MTS item", location.toString());
-            if (!(builderItem.getWrappedItem() instanceof ItemVehicle itemVehicle))
-                throw LuaValues.badArgument(index, "valid IV/MTS vehicle item", location.toString());
-
+            ItemVehicle itemVehicle = LuaConversions.getMTSItem(args, index, ItemVehicle.class);
             return new EntityVehicleF_Physics(world, null, itemVehicle, null);
         }
     }

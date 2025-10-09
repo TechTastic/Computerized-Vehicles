@@ -14,7 +14,6 @@ import minecrafttransportsimulator.items.instances.ItemVehicle;
 import minecrafttransportsimulator.mcinterface.IWrapperNBT;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -50,8 +49,8 @@ public class VehicleAPI implements ILuaAPI {
     }
 
     @LuaFunction
-    public VehiclePhysics getVehicle(IArguments args) throws LuaException {
-        return new VehiclePhysics(LuaConversions.getVehicle(args, 0, getWrapperWorld()));
+    public Vehicle getVehicle(IArguments args) throws LuaException {
+        return new Vehicle(getWrapperWorld(), LuaConversions.getVehicle(args, 0, getWrapperWorld()).uniqueUUID);
     }
 
     @LuaFunction
@@ -69,16 +68,16 @@ public class VehicleAPI implements ILuaAPI {
     }
 
     @LuaFunction
-    public List<VehiclePhysics> getAllVehiclesInArea(IArguments args) throws LuaException {
+    public List<Vehicle> getAllVehiclesInArea(IArguments args) throws LuaException {
         Point3D min = LuaConversions.optPoint(args, 0, new Point3D());
         Point3D max = LuaConversions.optPoint(args, 1, new Point3D());
         BoundingBox area = new BoundingBox(min, max);
         return getWrapperWorld().getEntitiesExtendingType(EntityVehicleF_Physics.class).stream()
-                .filter(phys -> area.isPointInside(phys.position, new Point3D())).map(VehiclePhysics::new).toList();
+                .filter(phys -> area.isPointInside(phys.position, new Point3D())).map(v -> new Vehicle(getWrapperWorld(), v.uniqueUUID)).toList();
     }
 
     @LuaFunction
-    public final VehiclePhysics spawnVehicle(IArguments args) throws LuaException {
+    public final Vehicle spawnVehicle(IArguments args) throws LuaException {
         WrapperWorld world = getWrapperWorld();
         EntityVehicleF_Physics vehicle = LuaConversions.getVehicle(args, 0, world);
 
@@ -104,7 +103,7 @@ public class VehicleAPI implements ILuaAPI {
         world.spawnEntity(vehicle);
         vehicle.addPartsPostAddition(null, nbt);
 
-        return new VehiclePhysics(vehicle);
+        return new Vehicle(world, vehicle.uniqueUUID);
     }
 
     @LuaFunction
@@ -127,6 +126,5 @@ public class VehicleAPI implements ILuaAPI {
             IWrapperNBT data = wrapper.getData();
             return data.hasKey("uniqueUUID") && data.getUUID("uniqueUUID").equals(existing.uniqueUUID);
         }).forEach(e -> e.remove(Entity.RemovalReason.DISCARDED));
-        //world.removeEntity(existing);
     }
 }
