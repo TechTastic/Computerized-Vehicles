@@ -1,0 +1,7 @@
+{
+  "package": "io.github.techtastic.computerized_vehicles.mixin",
+  "mixins": [
+    "MixinAPacketBase"
+  ],
+  "client": []
+}

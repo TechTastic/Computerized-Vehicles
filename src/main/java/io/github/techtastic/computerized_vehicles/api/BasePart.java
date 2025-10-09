@@ -1,4 +1,4 @@
-package io.github.techtastic.cc_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api;
 
 import minecrafttransportsimulator.entities.instances.APart;
 

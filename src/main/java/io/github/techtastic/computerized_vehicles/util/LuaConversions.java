@@ -1,4 +1,4 @@
-package io.github.techtastic.cc_vehicles.util;
+package io.github.techtastic.computerized_vehicles.util;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;

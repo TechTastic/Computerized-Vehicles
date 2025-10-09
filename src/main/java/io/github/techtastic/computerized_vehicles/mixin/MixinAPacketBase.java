@@ -1,6 +1,6 @@
-package io.github.techtastic.cc_vehicles.mixin;
+package io.github.techtastic.computerized_vehicles.mixin;
 
-import io.github.techtastic.cc_vehicles.networking.packet.PacketEntityColorChangeComputer;
+import io.github.techtastic.computerized_vehicles.networking.packet.PacketEntityColorChangeComputer;
 import minecrafttransportsimulator.mcinterface.InterfaceManager;
 import minecrafttransportsimulator.packets.components.APacketBase;
 import org.spongepowered.asm.mixin.Mixin;

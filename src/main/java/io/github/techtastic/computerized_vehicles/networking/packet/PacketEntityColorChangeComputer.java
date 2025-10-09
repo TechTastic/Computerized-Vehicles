@@ -1,4 +1,4 @@
-package io.github.techtastic.cc_vehicles.networking.packet;
+package io.github.techtastic.computerized_vehicles.networking.packet;
 
 import io.netty.buffer.ByteBuf;
 import minecrafttransportsimulator.entities.components.AEntityD_Definable;

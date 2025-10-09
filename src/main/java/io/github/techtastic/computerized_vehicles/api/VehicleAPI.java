@@ -1,7 +1,7 @@
-package io.github.techtastic.cc_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api;
 
 import dan200.computercraft.api.lua.*;
-import io.github.techtastic.cc_vehicles.util.LuaConversions;
+import io.github.techtastic.computerized_vehicles.util.LuaConversions;
 import mcinterface1201.*;
 import minecrafttransportsimulator.baseclasses.BoundingBox;
 import minecrafttransportsimulator.baseclasses.Point3D;

@@ -1,4 +1,4 @@
-package io.github.techtastic.cc_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import minecrafttransportsimulator.entities.components.AEntityA_Base;
