@@ -245,6 +245,8 @@ curseforge {
         changelog = rootProject.file("changelog.md")
         releaseType = 'release'
         addGameVersion '1.20.1'
+        addGameVersion 'NeoForge'
+        addGameVersion 'Forge'
 
         relations {
             requiredDependency 'minecraft-transport-simulator'
@@ -266,7 +268,7 @@ modrinth {
     versionName = "$mod_name $mod_version"
     uploadFile = jar
     gameVersions = ['1.20.1']
-    loaders = ['forge']
+    loaders = ['forge', 'neoforge']
     dependencies {
         required.project 'immersive-vehicles'
         required.project 'cc-tweaked'
