@@ -59,7 +59,7 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
-modId="cc_tweaked"
+modId="computercraft"
 mandatory=true
 versionRange="[${cct_version},)"
 ordering="AFTER"

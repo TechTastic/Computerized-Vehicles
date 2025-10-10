@@ -88,8 +88,9 @@ public class Vehicle extends EntityExisting {
     }
 
     @LuaFunction
-    public final void addPart(IArguments args, int slot) throws LuaException {
+    public final void addPart(IArguments args) throws LuaException {
         AItemPart partItem = LuaConversions.getPart(args, 0);
+        int slot = args.getInt(1);
 
         EntityVehicleF_Physics vehicle = this.getVehicle();
         JSONPartDefinition newPartDef = vehicle.definition.parts.get(slot);

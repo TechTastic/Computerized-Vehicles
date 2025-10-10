@@ -78,7 +78,6 @@ public class VehicleAPI implements ILuaAPI {
     @LuaFunction
     public final Vehicle spawnVehicle(IArguments args) throws LuaException {
         WrapperWorld world = getWrapperWorld();
-        EntityVehicleF_Physics vehicle = LuaConversions.getVehicle(args, 0, world);
 
         IWrapperNBT nbt;
         try {
@@ -88,6 +87,7 @@ public class VehicleAPI implements ILuaAPI {
             nbt = null;
         }
 
+        EntityVehicleF_Physics vehicle = new EntityVehicleF_Physics(world, null, LuaConversions.getMTSItem(args, 0, ItemVehicle.class), nbt);
         Direction facing = this.getLevel().getBlockState(this.getPosition()).getValue(BlockStateProperties.HORIZONTAL_FACING);
         Vec3 vec = this.getPosition().getCenter().relative(Direction.UP, vehicle.boundingBox.heightRadius + .5).relative(facing, 0.5);
         Point3D pos = LuaConversions.optPoint(args, 1, new Point3D(vec.x, vec.y, vec.z));

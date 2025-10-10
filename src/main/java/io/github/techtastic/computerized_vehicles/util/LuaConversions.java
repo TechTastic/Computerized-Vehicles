@@ -46,16 +46,14 @@ public class LuaConversions {
     }
 
     public static EntityVehicleF_Physics getVehicle(IArguments args, int index, WrapperWorld world) throws LuaException {
+        String str = args.getString(index);
         try {
             UUID uniqueUUID = UUID.fromString(args.getString(index));
             AEntityA_Base entity = world.getEntity(uniqueUUID);
             if (entity instanceof EntityVehicleF_Physics vehicle)
                 return vehicle;
-            throw LuaValues.badArgument(index, "unique UUID of vehicle", uniqueUUID.toString());
-        } catch (IllegalArgumentException e) {
-            ItemVehicle itemVehicle = LuaConversions.getMTSItem(args, index, ItemVehicle.class);
-            return new EntityVehicleF_Physics(world, null, itemVehicle, null);
-        }
+        } catch (IllegalArgumentException e) {}
+        throw LuaValues.badArgument(index, "unique UUID of vehicle", str);
     }
 
     public static UUID getUUID(IArguments args, int index) throws LuaException {
