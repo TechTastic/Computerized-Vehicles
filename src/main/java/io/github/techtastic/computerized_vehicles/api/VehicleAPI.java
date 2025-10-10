@@ -9,6 +9,7 @@ import minecrafttransportsimulator.entities.components.AEntityA_Base;
 import minecrafttransportsimulator.entities.components.AEntityB_Existing;
 import minecrafttransportsimulator.entities.instances.EntityVehicleF_Physics;
 import minecrafttransportsimulator.items.components.AItemPart;
+import minecrafttransportsimulator.items.instances.ItemBullet;
 import minecrafttransportsimulator.items.instances.ItemVehicle;
 import minecrafttransportsimulator.mcinterface.IWrapperNBT;
 import net.minecraft.core.BlockPos;
@@ -48,31 +49,38 @@ public class VehicleAPI implements ILuaAPI {
     }
 
     @LuaFunction
-    public Vehicle getVehicle(IArguments args) throws LuaException {
-        return new Vehicle(getWrapperWorld(), LuaConversions.getVehicle(args, 0, getWrapperWorld()).uniqueUUID);
+    public final Vehicle getVehicle(IArguments args) throws LuaException {
+        return new Vehicle(LuaConversions.getVehicle(args, 0, getWrapperWorld()));
     }
 
     @LuaFunction
-    public List<String> getAllPossibleVehicles() {
+    public final List<String> getAllPossibleVehicles() {
         return ForgeRegistries.ITEMS.getEntries().stream()
                 .filter(entry -> entry.getValue() instanceof BuilderItem item && item.getWrappedItem() instanceof ItemVehicle)
                 .map(entry -> entry.getKey().location().toString()).toList();
     }
 
     @LuaFunction
-    public List<String> getAllPossibleParts() {
+    public final List<String> getAllPossibleParts() {
         return ForgeRegistries.ITEMS.getEntries().stream()
                 .filter(entry -> entry.getValue() instanceof BuilderItem item && item.getWrappedItem() instanceof AItemPart)
                 .map(entry -> entry.getKey().location().toString()).toList();
     }
 
     @LuaFunction
-    public List<Vehicle> getAllVehiclesInArea(IArguments args) throws LuaException {
+    public final List<String> getAllPossibleBullets() {
+        return ForgeRegistries.ITEMS.getEntries().stream()
+                .filter(entry -> entry.getValue() instanceof BuilderItem item && item.getWrappedItem() instanceof ItemBullet)
+                .map(entry -> entry.getKey().location().toString()).toList();
+    }
+
+    @LuaFunction
+    public final List<Vehicle> getAllVehiclesInArea(IArguments args) throws LuaException {
         Point3D min = LuaConversions.optPoint(args, 0, new Point3D());
         Point3D max = LuaConversions.optPoint(args, 1, new Point3D());
         BoundingBox area = new BoundingBox(min, max);
         return getWrapperWorld().getEntitiesExtendingType(EntityVehicleF_Physics.class).stream()
-                .filter(phys -> area.isPointInside(phys.position, new Point3D())).map(v -> new Vehicle(getWrapperWorld(), v.uniqueUUID)).toList();
+                .filter(phys -> area.isPointInside(phys.position, new Point3D())).map(Vehicle::new).toList();
     }
 
     @LuaFunction
@@ -104,7 +112,7 @@ public class VehicleAPI implements ILuaAPI {
         world.spawnEntity(vehicle);
         vehicle.addPartsPostAddition(null, nbt);
 
-        return new Vehicle(world, vehicle.uniqueUUID);
+        return new Vehicle(vehicle);
     }
 
     @LuaFunction

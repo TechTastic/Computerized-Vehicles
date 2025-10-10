@@ -1,4 +1,4 @@
-package io.github.techtastic.computerized_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api.part;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -7,12 +7,12 @@ import minecrafttransportsimulator.entities.instances.PartEngine;
 import minecrafttransportsimulator.packets.instances.PacketPartEngine;
 
 public class EnginePart extends BasePart<PartEngine> {
-    protected EnginePart(PartEngine engine) {
+    public EnginePart(PartEngine engine) {
         super(engine);
     }
 
     @LuaFunction
-    public final boolean isMagnetoActive() {
+    public final boolean isMagnetoActive() throws LuaException {
         return this.getPart().magnetoVar.isActive;
     }
 
@@ -26,22 +26,22 @@ public class EnginePart extends BasePart<PartEngine> {
     }
 
     @LuaFunction
-    public final boolean isInLiquid() {
+    public final boolean isInLiquid() throws LuaException {
         return this.getPart().isInLiquid();
     }
 
     @LuaFunction
-    public final void startEngine() {
+    public final void startEngine() throws LuaException {
         this.getPart().startEngine();
     }
 
     @LuaFunction
-    public final void handStartEngine() {
+    public final void handStartEngine() throws LuaException {
         this.getPart().handStartEngine();
     }
 
     @LuaFunction
-    public final void autoStartEngine() {
+    public final void autoStartEngine() throws LuaException {
         this.getPart().autoStartEngine();
     }
 
@@ -52,32 +52,32 @@ public class EnginePart extends BasePart<PartEngine> {
     }
 
     @LuaFunction
-    public final void backfireEngine() {
+    public final void backfireEngine() throws LuaException {
         this.getPart().backfireEngine();
     }
 
     @LuaFunction
-    public final void badshiftEngine() {
+    public final void badshiftEngine() throws LuaException {
         this.getPart().backfireEngine();
     }
 
     @LuaFunction
-    public final boolean shiftUp() {
+    public final boolean shiftUp() throws LuaException {
         return this.getPart().shiftUp();
     }
 
     @LuaFunction
-    public final boolean shiftDown() {
+    public final boolean shiftDown() throws LuaException {
         return this.getPart().shiftDown();
     }
 
     @LuaFunction
-    public final void shiftNeutral() {
+    public final void shiftNeutral() throws LuaException {
         this.getPart().shiftNeutral();
     }
 
     @LuaFunction
-    public final double getCurrentGear() {
+    public final double getCurrentGear() throws LuaException {
         return this.getPart().currentGearVar.getValue();
     }
 }

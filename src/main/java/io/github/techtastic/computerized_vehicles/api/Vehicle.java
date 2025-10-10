@@ -4,9 +4,10 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.LuaValues;
+import io.github.techtastic.computerized_vehicles.api.base.EntityExisting;
+import io.github.techtastic.computerized_vehicles.api.part.*;
 import io.github.techtastic.computerized_vehicles.networking.packet.PacketEntityColorChangeComputer;
 import io.github.techtastic.computerized_vehicles.util.LuaConversions;
-import mcinterface1201.WrapperWorld;
 import minecrafttransportsimulator.baseclasses.ComputedVariable;
 import minecrafttransportsimulator.entities.instances.*;
 import minecrafttransportsimulator.items.components.AItemPart;
@@ -14,22 +15,17 @@ import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
 import minecrafttransportsimulator.mcinterface.InterfaceManager;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 public class Vehicle extends EntityExisting {
-    private final WrapperWorld world;
-    private final UUID vehicleId;
-
-    protected Vehicle(WrapperWorld world, UUID vehicleId) {
-        super(world.getEntity(vehicleId));
-        this.world = world;
-        this.vehicleId = vehicleId;
+    protected Vehicle(EntityVehicleF_Physics vehicle) {
+        super(vehicle);
     }
 
     private EntityVehicleF_Physics getVehicle() throws LuaException {
-        if (this.world.getEntity(this.vehicleId) instanceof EntityVehicleF_Physics vehicle)
+        if (this.getEntity() instanceof EntityVehicleF_Physics vehicle)
             return vehicle;
-        throw new LuaException("the vehicle with ID " + this.vehicleId + " no longer exists!");
+        throw new LuaException("the vehicle with ID " + this.id + " no longer exists!");
     }
 
     private void toggleActive(ComputedVariable variable, IArguments args, int index) throws LuaException {
@@ -38,6 +34,37 @@ public class Vehicle extends EntityExisting {
 
         if (oldState != newState)
             variable.setActive(newState, true);
+    }
+
+    private <T extends BasePart<U>, U extends APart> List<T> getParts() throws LuaException {
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    try {
+                        return (T) getPart(part);
+                    } catch (ClassCastException ignored) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private <T extends APart> BasePart<T> getPart(T part) {
+        if (part instanceof PartGeneric generic)
+            return (BasePart<T>) new GenericPart(generic);
+        if (part instanceof PartGroundDevice ground)
+            return (BasePart<T>) new GroundPart(ground);
+        if (part instanceof PartGun gun)
+            return (BasePart<T>) new GunPart(gun);
+        if (part instanceof PartInteractable interact)
+            return (BasePart<T>) new InteractablePart(interact);
+        if (part instanceof PartEngine engine)
+            return (BasePart<T>) new EnginePart(engine);
+        if (part instanceof PartSeat seat)
+            return (BasePart<T>) new SeatPart(seat);
+        if (part instanceof PartPropeller propeller)
+            return (BasePart<T>) new PropellorPart(propeller);
+        return null;
     }
 
     // General
@@ -73,22 +100,36 @@ public class Vehicle extends EntityExisting {
 
     @LuaFunction
     public final List<SeatPart> getSeats() throws LuaException {
-        return this.getVehicle().partsInSlots.stream()
-                .filter(part -> part instanceof PartSeat)
-                .map(part -> new SeatPart((PartSeat) part))
-                .toList();
+        return getParts();
     }
 
     @LuaFunction
     public final List<GunPart> getGuns() throws LuaException {
-        return this.getVehicle().partsInSlots.stream()
-                .filter(part -> part instanceof PartGun)
-                .map(part -> new GunPart((PartGun) part))
-                .toList();
+        return getParts();
     }
 
     @LuaFunction
-    public final void addPart(IArguments args) throws LuaException {
+    public final List<GenericPart> getGenericParts() throws LuaException {
+        return getParts();
+    }
+
+    @LuaFunction
+    public final List<GroundPart> getGroundDevices() throws LuaException {
+        return getParts();
+    }
+
+    @LuaFunction
+    public final List<InteractablePart> getInteractables() throws LuaException {
+        return getParts();
+    }
+
+    @LuaFunction
+    public final List<PropellorPart> getPropellors() throws LuaException {
+        return getParts();
+    }
+
+    @LuaFunction
+    public final BasePart<?> addPart(IArguments args) throws LuaException {
         AItemPart partItem = LuaConversions.getPart(args, 0);
         int slot = args.getInt(1);
 
@@ -97,7 +138,7 @@ public class Vehicle extends EntityExisting {
         if (!partItem.isPartValidForPackDef(newPartDef, vehicle.subDefinition, !newPartDef.bypassSlotMinMax))
             throw LuaValues.badArgument(0, "valid IV/MTS part for " + vehicle.definition.packID + " pack", partItem.getItemName());
 
-        vehicle.addPartFromStack(partItem.getNewStack(null), null, slot, false, true);
+        return getPart(vehicle.addPartFromStack(partItem.getNewStack(null), null, slot, false, true));
     }
 
     @LuaFunction

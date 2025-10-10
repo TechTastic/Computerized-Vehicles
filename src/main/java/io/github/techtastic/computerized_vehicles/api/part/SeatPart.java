@@ -1,4 +1,4 @@
-package io.github.techtastic.computerized_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api.part;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class SeatPart extends BasePart<PartSeat> {
-    protected SeatPart(PartSeat part) {
+    public SeatPart(PartSeat part) {
         super(part);
     }
 
     @LuaFunction
-    public final String getRider() {
+    public final String getRider() throws LuaException {
         return this.getPart().rider instanceof WrapperEntity entity ? entity.getID().toString() : null;
     }
 
     @LuaFunction
-    public final void removeRider() {
+    public final void removeRider() throws LuaException {
         this.getPart().removeRider();
     }
 
@@ -33,7 +33,7 @@ public class SeatPart extends BasePart<PartSeat> {
     }
 
     @LuaFunction
-    public final List<GunPart> getGuns() {
+    public final List<GunPart> getGuns() throws LuaException {
         return this.getPart().gunGroups.get(this.getPart().activeGunItem).stream().map(GunPart::new).toList();
     }
 }

@@ -1,4 +1,4 @@
-package io.github.techtastic.computerized_vehicles.api;
+package io.github.techtastic.computerized_vehicles.api.part;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -9,7 +9,7 @@ import minecrafttransportsimulator.items.instances.ItemBullet;
 import minecrafttransportsimulator.mcinterface.IWrapperItemStack;
 
 public class GunPart extends BasePart<PartGun> {
-    protected GunPart(PartGun part) {
+    public GunPart(PartGun part) {
         super(part);
     }
 
