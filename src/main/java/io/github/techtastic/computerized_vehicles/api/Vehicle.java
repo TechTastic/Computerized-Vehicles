@@ -59,11 +59,6 @@ public class Vehicle extends EntityDefinable {
     // General
 
     @LuaFunction
-    public final Object getDefinition() throws LuaException {
-        return LuaConversions.toLuaAny(this.getVehicle().definition);
-    }
-
-    @LuaFunction
     public final double getSpeed() throws LuaException {
         return this.getVehicle().indicatedSpeed;
     }

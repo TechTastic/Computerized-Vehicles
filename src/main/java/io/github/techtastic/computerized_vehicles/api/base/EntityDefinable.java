@@ -2,6 +2,7 @@ package io.github.techtastic.computerized_vehicles.api.base;
 
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
+import io.github.techtastic.computerized_vehicles.util.LuaConversions;
 import minecrafttransportsimulator.baseclasses.ComputedVariable;
 import minecrafttransportsimulator.entities.components.AEntityD_Definable;
 
@@ -18,6 +19,11 @@ public class EntityDefinable extends EntityExisting {
         if (this.getBase() instanceof AEntityD_Definable<?> definable)
             return definable;
         throw new LuaException("the IV/MTS entity with ID " + this.id + " no longer exists!");
+    }
+
+    @LuaFunction
+    public final Object getDefinition() throws LuaException {
+        return LuaConversions.toLuaAny(this.getDefinable().definition);
     }
 
     @LuaFunction
