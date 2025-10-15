@@ -1,3 +1,2 @@
-# Changelog - 0.2.1
-- Added `getCustomVariable` to get the new `LuaComputedVariable` object
-- Fixed `SeatPart#setRider`
+# Changelog - 0.2.2
+- Moved `getDefinition`, now applies to vehicles and all parts
