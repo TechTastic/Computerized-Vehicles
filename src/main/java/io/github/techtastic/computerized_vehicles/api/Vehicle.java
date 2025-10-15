@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.LuaValues;
+import io.github.techtastic.computerized_vehicles.api.base.EntityDefinable;
 import io.github.techtastic.computerized_vehicles.api.base.EntityExisting;
 import io.github.techtastic.computerized_vehicles.api.part.*;
 import io.github.techtastic.computerized_vehicles.networking.packet.PacketEntityColorChangeComputer;
@@ -17,7 +18,7 @@ import minecrafttransportsimulator.mcinterface.InterfaceManager;
 import java.util.List;
 import java.util.Objects;
 
-public class Vehicle extends EntityExisting {
+public class Vehicle extends EntityDefinable {
     protected Vehicle(EntityVehicleF_Physics vehicle) {
         super(vehicle);
     }

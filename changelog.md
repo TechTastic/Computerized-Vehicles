@@ -1,9 +1,2 @@
-# Changelog - 0.1.0
-- Refactoring
-- Added new Parts
-  - Generic
-  - Ground
-  - Interactable
-  - Propellor
-- Added validation checks for all parts
-- Added `VehicleAPI#getAllPossibleBullets`
+# Changelog - 0.2.0
+- Adding `getCustomVariable` to get the new `LuaComputedVariable` object

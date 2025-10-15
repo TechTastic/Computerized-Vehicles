@@ -1,10 +1,11 @@
 package io.github.techtastic.computerized_vehicles.api.part;
 
 import dan200.computercraft.api.lua.LuaException;
+import io.github.techtastic.computerized_vehicles.api.base.EntityDefinable;
 import io.github.techtastic.computerized_vehicles.api.base.EntityExisting;
 import minecrafttransportsimulator.entities.instances.APart;
 
-public class BasePart<T extends APart> extends EntityExisting {
+public class BasePart<T extends APart> extends EntityDefinable {
     protected BasePart(T part) {
         super(part);
     }
