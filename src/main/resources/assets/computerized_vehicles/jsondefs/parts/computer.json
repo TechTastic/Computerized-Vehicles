@@ -1,0 +1,36 @@
+{
+  "generic": {
+    "type": "interactable_computer",
+    "width": 1.0,
+    "height": 1.0
+  },
+  "interactable": {
+    "interactionType": "crate",
+    "feedsVehicles": true,
+    "inventoryUnits": 1.0
+  },
+  "definitions": [
+    {
+      "subName": "",
+      "name": "Computer",
+      "extraMaterialLists": [
+        []
+      ]
+    }
+  ],
+  "rendering": {
+    "animatedObjects": [],
+    "lightObjects": [],
+    "particles": [],
+    "sounds": [],
+    "modelType": "obj"
+  },
+  "general": {
+    "name": "Computer",
+    "materialLists": [
+      []
+    ],
+    "radarWidth": 0.0,
+    "radarRange": 0.0
+  }
+}

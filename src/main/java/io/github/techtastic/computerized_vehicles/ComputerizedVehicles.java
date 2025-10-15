@@ -1,10 +1,12 @@
 package io.github.techtastic.computerized_vehicles;
 
 import com.mojang.logging.LogUtils;
+import cpw.mods.modlauncher.EnumerationHelper;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.component.AdminComputer;
 import dan200.computercraft.api.component.ComputerComponents;
 import io.github.techtastic.computerized_vehicles.api.VehicleAPI;
+import minecrafttransportsimulator.jsondefs.JSONPart;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;

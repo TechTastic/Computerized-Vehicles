@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(APacketBase.class)
 public class MixinAPacketBase {
     @Inject(method = "initPackets", at = @At("TAIL"), remap = false)
-    private static void cc_vehicles$addNewPackets(byte packetIndex, CallbackInfo ci) {
+    private static void computerized_vehicles$addNewPackets(byte packetIndex, CallbackInfo ci) {
         InterfaceManager.packetInterface.registerPacket(packetIndex++, PacketEntityColorChangeComputer.class);
     }
 }

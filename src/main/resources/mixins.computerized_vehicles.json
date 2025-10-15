@@ -1,7 +1,10 @@
 {
   "package": "io.github.techtastic.computerized_vehicles.mixin",
+  "minVersion": "JAVA_8",
   "mixins": [
-    "MixinAPacketBase"
+    "MixinAPacketBase",
+    "MixinInteractableComponentType",
+    "MixinPartInteractable"
   ],
   "client": []
 }
