@@ -3,6 +3,7 @@ package io.github.techtastic.computerized_vehicles.api.part;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
+import io.github.techtastic.computerized_vehicles.util.LuaConversions;
 import mcinterface1201.WrapperEntity;
 import minecrafttransportsimulator.entities.instances.PartSeat;
 import minecrafttransportsimulator.mcinterface.IWrapperEntity;
@@ -26,9 +27,9 @@ public class SeatPart extends BasePart<PartSeat> {
     }
 
     @LuaFunction
-    public final boolean setRider(String uuid, IArguments args) throws LuaException {
+    public final boolean setRider(IArguments args) throws LuaException {
         PartSeat seat = this.getPart();
-        IWrapperEntity entity = seat.world.getEntity(UUID.fromString(uuid));
+        WrapperEntity entity = LuaConversions.getEntity(args, 0, seat.world);
         return seat.setRider(entity, args.optBoolean(1, true));
     }
 

@@ -14,6 +14,7 @@ import minecrafttransportsimulator.entities.instances.*;
 import minecrafttransportsimulator.items.components.AItemPart;
 import minecrafttransportsimulator.jsondefs.JSONPartDefinition;
 import minecrafttransportsimulator.mcinterface.InterfaceManager;
+import net.minecraft.world.entity.animal.Panda;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,19 +36,6 @@ public class Vehicle extends EntityDefinable {
 
         if (oldState != newState)
             variable.setActive(newState, true);
-    }
-
-    private <T extends BasePart<U>, U extends APart> List<T> getParts() throws LuaException {
-        return this.getVehicle().partsInSlots.stream()
-                .map(part -> {
-                    try {
-                        return (T) getPart(part);
-                    } catch (ClassCastException ignored) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toList();
     }
 
     private <T extends APart> BasePart<T> getPart(T part) {
@@ -101,32 +89,74 @@ public class Vehicle extends EntityDefinable {
 
     @LuaFunction
     public final List<SeatPart> getSeats() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartSeat seat)
+                        return new SeatPart(seat);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction
     public final List<GunPart> getGuns() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartGun gun)
+                        return new GunPart(gun);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction
     public final List<GenericPart> getGenericParts() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartGeneric generic)
+                        return new GenericPart(generic);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction
     public final List<GroundPart> getGroundDevices() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartGroundDevice ground)
+                        return new GroundPart(ground);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction
     public final List<InteractablePart> getInteractables() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartInteractable interactable)
+                        return new InteractablePart(interactable);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction
     public final List<PropellorPart> getPropellors() throws LuaException {
-        return getParts();
+        return this.getVehicle().partsInSlots.stream()
+                .map(part -> {
+                    if (part instanceof PartPropeller prop)
+                        return new PropellorPart(prop);
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @LuaFunction

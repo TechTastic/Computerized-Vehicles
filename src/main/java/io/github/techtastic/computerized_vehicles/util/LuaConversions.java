@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaValues;
 import mcinterface1201.BuilderItem;
+import mcinterface1201.WrapperEntity;
 import mcinterface1201.WrapperWorld;
 import minecrafttransportsimulator.baseclasses.Point3D;
 import minecrafttransportsimulator.baseclasses.RotationMatrix;
@@ -12,6 +13,8 @@ import minecrafttransportsimulator.entities.instances.EntityVehicleF_Physics;
 import minecrafttransportsimulator.items.components.AItemBase;
 import minecrafttransportsimulator.items.components.AItemPart;
 import minecrafttransportsimulator.items.instances.ItemVehicle;
+import minecrafttransportsimulator.mcinterface.AWrapperWorld;
+import minecrafttransportsimulator.mcinterface.IWrapperEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -21,6 +24,21 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class LuaConversions {
+    public static WrapperEntity getEntity(IArguments args, int index, AWrapperWorld world) throws LuaException {
+        String str = args.getString(index);
+        try {
+            UUID uniqueUUID = UUID.fromString(args.getString(index));
+            IWrapperEntity entity = world.getExternalEntity(uniqueUUID);
+            if (entity instanceof WrapperEntity wrapper)
+                return wrapper;
+            throw LuaValues.badArgument(index, "valid UUID of Minecraft Entity", str);
+        } catch (IllegalArgumentException | LuaException e) {
+            if (e instanceof LuaException lua)
+                throw lua;
+        }
+        throw LuaValues.badArgument(index, "a valid UUID", str);
+    }
+
     public static <T extends AItemBase> T getMTSItem(IArguments args, int index, Class<T> type) throws LuaException {
         String str = args.getString(index);
         ResourceLocation location = ResourceLocation.tryParse(str);
