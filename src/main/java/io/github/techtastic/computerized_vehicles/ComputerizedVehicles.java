@@ -27,5 +27,7 @@ public class ComputerizedVehicles {
                 return new VehicleAPI(system);
             return null;
         });
+
+        CVPeripheralProvider.register();
     }
 }

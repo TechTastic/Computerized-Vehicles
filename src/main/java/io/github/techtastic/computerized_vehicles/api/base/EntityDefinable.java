@@ -2,6 +2,7 @@ package io.github.techtastic.computerized_vehicles.api.base;
 
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
+import io.github.techtastic.computerized_vehicles.api.misc.LuaComputedVariable;
 import io.github.techtastic.computerized_vehicles.util.LuaConversions;
 import minecrafttransportsimulator.baseclasses.ComputedVariable;
 import minecrafttransportsimulator.entities.components.AEntityD_Definable;

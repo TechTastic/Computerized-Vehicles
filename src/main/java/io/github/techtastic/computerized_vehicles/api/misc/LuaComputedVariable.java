@@ -1,4 +1,4 @@
-package io.github.techtastic.computerized_vehicles.api.base;
+package io.github.techtastic.computerized_vehicles.api.misc;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -8,7 +8,7 @@ import minecrafttransportsimulator.baseclasses.ComputedVariable;
 public class LuaComputedVariable {
     private final ComputedVariable variable;
 
-    protected LuaComputedVariable(ComputedVariable variable) {
+    public LuaComputedVariable(ComputedVariable variable) {
         this.variable = variable;
     }
 
