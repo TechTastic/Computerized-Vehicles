@@ -33,7 +33,7 @@ public class LuaBezierCurve {
         return LuaConversions.toLua(this.curve.endRotation.angles);
     }
 
-    @LuaFunction(value = {"__len", "getPathLength"})
+    @LuaFunction
     public final double getPathLength() {
         return this.curve.pathLength;
     }
