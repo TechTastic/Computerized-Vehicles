@@ -1,2 +1,2 @@
-# Changelog - 0.2.2
-- Moved `getDefinition`, now applies to vehicles and all parts
+# Changelog - 0.2.3
+- Fixed `getAllVariables` returning nil instead of the list of variables
