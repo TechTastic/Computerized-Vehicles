@@ -37,10 +37,9 @@ public class EntityDefinable extends EntityExisting {
         try {
             Class<AEntityD_Definable> clazz = AEntityD_Definable.class;
             Field field = clazz.getDeclaredField("computedVariables");
+            field.setAccessible(true);
             Map<String, ComputedVariable> vars = (Map<String, ComputedVariable>) field.get(this.getDefinable());
-            vars.keySet().forEach(key -> {
-                table.put(key, new LuaComputedVariable(vars.get(key)));
-            });
+            vars.keySet().forEach(key -> table.put(key, new LuaComputedVariable(vars.get(key))));
         } catch (NoSuchFieldException | IllegalAccessException | ClassCastException | LuaException e) {
             if (e instanceof LuaException lua)
                 throw lua;
